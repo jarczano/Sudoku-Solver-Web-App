@@ -1,0 +1,8 @@
+.idea
+images/*
+numpy file/*
+venv/
+videoCapture/
+private.key
+cert.crt
+__pycache__/

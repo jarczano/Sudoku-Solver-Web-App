@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Przesyłanie strumienia wideo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+</head>
+<body>
+
+    <h1 class="title">Sudoku Solver</h1>
+
+    <div id="Loader_container">
+        <span id='loader' class="loader"></span>
+        <p id="loader_text">Please wait</p>
+    </div>
+
+
+    <div id="video_container">
+        <video id="videoElement" autoplay></video>
+        <img id="image_solution" >
+    </div>
+
+      <div class="buttons">
+        <button disabled id="camera-button"  class="camera-button" onclick="SwitchCamera()">Zmień kamerę</button>
+        <button disabled id='next-button' class="next-button" onclick="NextSearch()">Następne wyszukiwanie</button>
+      </div>
+
+        <div id="fail"></div>
+
+    <!--<canvas id="canvas" width="400" height="300" ></canvas>-->
+
+
+    <script src="static/script.js"></script>
+
+</body>
+
+</html>
