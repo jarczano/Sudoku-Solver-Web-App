@@ -1,15 +1,13 @@
-import time
 from flask_socketio import SocketIO, emit
-from flask import Flask, Response, render_template
+from flask import Flask, render_template
 import cv2
 from find_sudoku_board import find_sudoku_board
 from split_board import split_board, find_squares
 from recognize_board import recognize_board
 from sudoku import Sudoku
 from image_solve_board import image_solve_board
-from utils import get_available_cameras
 import copy
-import io, base64
+import base64
 import numpy as np
 
 
