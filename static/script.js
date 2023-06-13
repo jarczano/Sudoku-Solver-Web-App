@@ -1,4 +1,5 @@
-// local host: var socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port);
+// local host:
+//var socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port);
 var socket = io.connect(window.location.protocol + '//' + window.location.host);
 
 socket.on('connect', function () {
@@ -55,7 +56,7 @@ function view_control(stage='start', image=null){
             LoaderTextSolving();
     }
         else if (stage == "error"){
-            RestartCamera();
+            RestartCamera(cameras[currentCameraIndex].deviceId);
             ShowCameraImage();
             StartStream();
             HideImage();
@@ -295,6 +296,7 @@ function ShowCameraImage(){
 function NextSearch(){
 
     HideImage();
+    get_available_camera();
     RestartCamera(cameras[currentCameraIndex].deviceId);
     StartStream();
     ActivateButtonSwitchCamera();
