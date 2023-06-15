@@ -6,9 +6,9 @@ from utils import euclidian_distance
 
 def find_sudoku_board(frame):
     """
-    F return contour of board square
-    :param frame:
-    :return:
+    Function return contour of board square
+    :param frame: frame from user camera
+    :return: found: bool, contour of sudoku board on frame
     """
     height, width = frame.shape[0], frame.shape[1]
 
@@ -34,6 +34,7 @@ def find_sudoku_board(frame):
 
     largest_contours = heapq.nlargest(n_largest, contours, key=cv2.contourArea)
 
+    # check n largest contours on frame
     # selecting such contour that: 1) has 4 vertices, 2) its not in the edge of image, 3) has suitable area,
     # 4) has convex shape, 5) is approximately a square
     for i in range(n_largest):
@@ -68,11 +69,6 @@ def find_sudoku_board(frame):
 
                             cv2.drawContours(frame, [board], -1, (0, 255, 0), 5)
 
-                            #ret, buffer = cv2.imencode('.jpg', frame)
-                            #frame_f = buffer.tobytes()
-                            #yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame_f + b'\r\n')
-
                             break
-
-
     return found, board
+

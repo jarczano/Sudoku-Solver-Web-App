@@ -4,6 +4,7 @@ import heapq
 
 def image_solve_board(board, sorted_contours_square, digital_board, sudoku_solved):
     """
+    Function creates an image of a solved Sudoku board
     :param board: image of sudoku board
     :param sorted_contours_square: sorted list of contours of squares
     :param digital_board: origin sudoku board as numpy array
@@ -31,5 +32,4 @@ def image_solve_board(board, sorted_contours_square, digital_board, sudoku_solve
                 cv2.putText(board, str(sudoku_solved[row][col]), org=(x_org, y_org),
                             fontFace=font, fontScale=font_scale, color=(0, 255, 0),
                             thickness=thickness, lineType=cv2.LINE_AA)
-
     return board

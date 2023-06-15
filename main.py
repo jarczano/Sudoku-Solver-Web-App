@@ -1,14 +1,15 @@
 from flask_socketio import SocketIO, emit
 from flask import Flask, render_template
 import cv2
+import copy
+import base64
+
 from find_sudoku_board import find_sudoku_board
 from split_board import split_board, find_squares
 from recognize_board import recognize_board
 from sudoku import Sudoku
 from image_solve_board import image_solve_board
-import copy
-import base64
-import numpy as np
+from utils import base64_to_image, get_ipv4_address
 
 
 app = Flask(__name__)
@@ -16,6 +17,12 @@ socketio = SocketIO(app)
 
 
 def emit_response(response, image='null'):
+    """
+    Function sends a response to the server
+    :param response: one of the stage "recognition", "solving", "error", "solution"
+    :param image: Image of found sudoku board or image of the solved sudoku board
+    :return: emit response to the server
+    """
     if image != 'null':
         encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 90]
         _, frame_encoded = cv2.imencode(".jpg", image, encode_param)
@@ -27,43 +34,48 @@ def emit_response(response, image='null'):
         processed_img_data = 'null'
     emit('response', [str(response), processed_img_data])
 
+
 @socketio.on("image")
 def receive_image(image):
+    """
+    The function receives an image from the client's camera. It recognizes the Sudoku puzzle,
+    solves it, and sends the response back to the server.
+    :param image: image from camera
+    :return: sends the response back to the server
+    """
+
     frame = base64_to_image(image)
 
-
-    # check image quality to select proper algorithm
+    # Check image quality to select proper algorithm
     if frame.shape[0] >= 1080 and frame.shape[1] >= 1080:
         high_quality = True
     else:
         high_quality = False
-    print('high: ', frame.shape[0], ' width: ', frame.shape[1])
-    print("High quality: ", high_quality)
+    print('High frame: ', frame.shape[0], ' Width frame: ', frame.shape[1])
 
     # Try find the sudoku board on frame
     found = False
     try:
         found, board_contour = find_sudoku_board(frame)
-        print("found", found)
+        print("Found: ", found)
     except Exception:
         pass
 
     if found:
-        print('4')
-        #print("found")
+
+        # Divides sudoku boards into 81 individual fields
         if high_quality:
             splited, board_image, contours_sq = find_squares(frame, board_contour)
         else:
             splited, board_image, contours_sq = split_board(frame, board_contour)
+        print("Board splited: ", splited)
 
         if splited:
 
             emit_response('recognition', board_image)
-            #emit("response", ["recognition", board_image])
 
-            print('5')
             # Recognize the digits entered in the squares
-            digital_board = recognize_board(board_image, contours_sq) # można jeszcze w zaleznosci od jakosci
+            digital_board = recognize_board(board_image, contours_sq)
 
             digital_board_origin = copy.deepcopy(digital_board)
 
@@ -73,27 +85,22 @@ def receive_image(image):
             sudoku_read.create_board_pos()
 
             sudoku_read.check_correct()
-            print('correct:', sudoku_read.correct)
+            print('Sudoku correct:', sudoku_read.correct)
             if sudoku_read.correct:
 
-                #emit("response", ["solving", 'none'])
                 emit_response("solving")
 
-                print('6')
                 # Solve sudoku
-                sudoku_solved = Sudoku.solve(sudoku_read)
-                print('7')
-                # Display sudoku solution
-                img_solution = image_solve_board(board_image, contours_sq, digital_board_origin, sudoku_solved)
+                success, sudoku_solved = Sudoku.solve(sudoku_read)
 
-                emit_response("solution", img_solution)
-                #emit("response", ["solution", img_solution])
-                # tutaj powinno byc drugie else jeżeli nie uda się rozwiązać, ale funkcja solve nie ma wyjscia bezpieczenstaw jezeli sudoku bedzie zjebane zeby nie mielic w nieskonczonosc
-
+                if success:
+                    # Display sudoku solution
+                    img_solution = image_solve_board(board_image, contours_sq, digital_board_origin, sudoku_solved)
+                    emit_response("solution", img_solution)
+                else:
+                    emit_response("error")
             else:
                 emit_response("error")
-                #emit("response", ["error", 'none'])
-
 
 
 @app.route('/')
@@ -101,31 +108,19 @@ def index():
     return render_template('index.html')
 
 
-
-
 @socketio.on('connect')
 def handle_connect():
-    print('Połączono z klientem SocketIO')
+    print('Connect with client SocketIO')
+
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    print('Rozłączono klienta SocketIO')
+    print('Disconnect with client SocketIO')
 
-def base64_to_image(base64_string):
-    # Extract the base64 encoded binary data from the input string
-    base64_data = base64_string.split(",")[1]
-    # Decode the base64 data to bytes
-    image_bytes = base64.b64decode(base64_data)
-    # Convert the bytes to numpy array
-    image_array = np.frombuffer(image_bytes, dtype=np.uint8)
-    # Decode the numpy array as an image using OpenCV
-    image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
-    return image
+
+ip_address = get_ipv4_address()
 
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, host='192.168.1.5', port=5000,
+    socketio.run(app, debug=True, allow_unsafe_werkzeug=True, host=ip_address, port=5000,
                  ssl_context=('cert.crt', 'private.key'))
-    #app.run(debug=True, host='192.168.1.5')
-
-    # 192.168.1.5

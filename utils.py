@@ -1,9 +1,12 @@
 import math
 import numpy as np
 import cv2
+import base64
+import socket
+
 
 def euclidian_distance(point_a, point_b):
-    # F return distance between 2 point
+    # Function return distance between 2 point
     return math.sqrt((point_b[0] - point_a[0]) ** 2 + (point_b[1] - point_a[1]) ** 2)
 
 
@@ -34,10 +37,11 @@ def sorted_squares(contours_square):
 
 def protractor(contour):
     """
-        F return the angle between top horizontal line of contour and axis ox
-    :param contour:
-    :return:
+    Function return the angle between top horizontal line of contour and axis ox
+    :param contour: contour of sudoku board
+    :return: angle between top horizontal line of contour and axis ox
     """
+
     if len(contour) == 4:
         contour = np.amin(contour, axis=1)
         contour = contour[contour[:, 1].argsort()]
@@ -62,9 +66,9 @@ def protractor(contour):
 
 def divide_contour(contour):
     """
-    Function divide big contour whole sudoku board into 81 small squares
-    :param contour:
-    :return:
+    The function determines a list of contours for all 81 cells based on an equal division of the four edges of the board
+    :param contour: contour of sudoku board
+    :return: list of contours for all 81 cells
     """
     top = contour[0:2]
     bottom = contour[2:4]
@@ -127,7 +131,7 @@ def divide_contour(contour):
 
 
 def get_available_cameras():
-    num_cameras = 10  # Próba otwarcia maksymalnie 10 kamer
+    num_cameras = 10
 
     available_cameras = []
 
@@ -138,3 +142,29 @@ def get_available_cameras():
             camera.release()
 
     return available_cameras
+
+
+def base64_to_image(base64_string):
+    # Extract the base64 encoded binary data from the input string
+    base64_data = base64_string.split(",")[1]
+    # Decode the base64 data to bytes
+    image_bytes = base64.b64decode(base64_data)
+    # Convert the bytes to numpy array
+    image_array = np.frombuffer(image_bytes, dtype=np.uint8)
+    # Decode the numpy array as an image using OpenCV
+    image = cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+    return image
+
+
+def get_ipv4_address():
+    """
+    Function return local ip address
+    :return: local ip address
+    """
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        sock.connect(("8.8.8.8", 80))
+        local_ip_address = sock.getsockname()[0]
+    finally:
+        sock.close()
+    return local_ip_address

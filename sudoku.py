@@ -12,7 +12,7 @@ class Sudoku:
 
     def check_correct(self):
         """
-        function checks if the board is correct at the moment. IThe function checks if no digit is repeated in a row,
+        Function checks if the board is correct at the moment. Function checks if no digit is repeated in a row,
         column, or small square.
         :return: change object attribute correct to False if sudoku is incorrect
         """
@@ -32,7 +32,7 @@ class Sudoku:
                 self.correct = False
                 break
 
-        # checking if there are unique digits in the small square
+        # checking if there are unique digits in the small square 3 x 3
         for row in range(3):
             for col in range(3):
                 row_from = row * 3
@@ -92,7 +92,8 @@ class Sudoku:
         :param row_to:
         :param col_from:
         :param col_to:
-        :return:
+        :return: dictionary where keys are digits that are not yet
+        entered in this area of the board, and their values are indices where there are
         """
         area = self.board[row_from: row_to, col_from: col_to]
         digits = np.arange(1, 10)
@@ -109,20 +110,26 @@ class Sudoku:
         return index_numbers
 
     def __update_board_pos(self, digit, row, col):
-        # when we input the digit in board[row][col] then this function update board possibilities
-        # delete this digit from row, column and small square
+        """
+        When we input the digit in board[row][col] then this function update board possibilities
+        delete this digit from row, column and small square 3 x 3
+        :param digit: one digit from 1 to 9
+        :param row: row number from 0 to 8
+        :param col: column number from 0 to 8
+        :return: update board possibilities
+        """
 
-        # delete from row
+        # delete digit from row
         for i in range(9):
             if i != col:
-                self.board_pos[row][i] = np.setdiff1d(self.board_pos[row][i], [digit]) # nie wiem czy to w [] musi byc
+                self.board_pos[row][i] = np.setdiff1d(self.board_pos[row][i], [digit])
 
-        # delete from column
+        # delete digit from column
         for j in range(9):
             if j != row:
                 self.board_pos[j][col] = np.setdiff1d(self.board_pos[j][col], [digit])
 
-        # delete from small square
+        # delete from small square 3 x 3
         row_from = int((row // 3) * 3)
         row_to = row_from + 3
         col_from = int((col // 3) * 3)
@@ -134,7 +141,10 @@ class Sudoku:
                     self.board_pos[i][j] = np.setdiff1d(self.board_pos[i][j], [digit])
 
     def only_poss_field(self):
-        # checks if for any field is only one possibility, if yes then completes the board
+        """
+        checks if for any field is only one possibility, if yes then completes the board
+        :return: update board and board possibilities
+        """
 
         for row in range(9):
             for col in range(9):
@@ -144,7 +154,10 @@ class Sudoku:
                     self.__update_board_pos(self.board_pos[row][col][0], row, col)
 
     def only_poss_col(self):
-        # checks if for any column some digits could be in only one field, if yes then completes the board
+        """
+        checks if for any column some digits could be in only one field, if yes then completes the board
+        :return: update board and board possibilities
+        """
 
         for row in range(9):
             index_numbers = self.__find_index_numbers(row, row + 1, 0, 9)
@@ -157,7 +170,11 @@ class Sudoku:
                     self.__update_board_pos(num, row, index_numbers[num][0][1])
 
     def only_poss_row(self):
-        # checks if for any row some digits could be in only one field, if yes then completes the board
+        """
+        Checks if for any row some digits could be in only one field, if yes then completes the board
+        :return: update board and board possibilities
+        """
+
         for col in range(9):
             index_numbers = self.__find_index_numbers(0, 9, col, col + 1)
             for num in index_numbers:
@@ -168,7 +185,11 @@ class Sudoku:
                     self.__update_board_pos(num, index_numbers[num][0][0], col)
 
     def only_poss_square(self):
-        # checks if for any small square some digits could be in only one field, if yes then completes the board
+        """
+        Checks if for any small square 3 x 3 some digits could be in only one field, if yes then completes the board
+        :return: update board and board possibilities
+        """
+
         for row in range(3):
             for col in range(3):
                 row_from = row * 3
@@ -186,8 +207,11 @@ class Sudoku:
                         self.__update_board_pos(num, index_numbers[num][0][0], index_numbers[num][0][1])
 
     def type_random(self):
-        # randomly chooses one field with the fewest number of possibilities and randomly
-        # chooses the digit for that field
+        """
+        Randomly chooses one field with the fewest number of possibilities and randomly
+        chooses the digit for that field
+        :return: update board and board possibilities
+        """
 
         result = []
         min_len = 9
@@ -200,7 +224,7 @@ class Sudoku:
                         min_len = len(self.board_pos[row, col])
                         result = [(row, col, self.board_pos[row, col])]
 
-        guess = random.choice(result) # tutaj wywala blad czasami list index out of range
+        guess = random.choice(result)
         digit = np.random.choice(guess[2])
         self.board[guess[0], guess[1]] = digit
         self.board_pos[guess[0], guess[1]] = np.array([digit])
@@ -227,7 +251,9 @@ class Sudoku:
         return sum(sum(self.board != 0))
 
     def number_to_excluded(self):
-        # return the number of possibilities which should be eliminated
+        """
+        :return: number of possibilities which should be eliminated, if 0 then indicate as solved
+        """
 
         exclusion = 0
         for row in self.board_pos:
@@ -242,14 +268,27 @@ class Sudoku:
 
     @staticmethod
     def solve(sudoku):
+        """
+        Solves Sudoku using various methods
+        :param sudoku: object sudoku
+        :return: The solved Sudoku board as a 9x9 matrix
+        """
+
         sudoku.create_board_pos()
         counter = 0
         while not sudoku.solved:
 
+            if counter == 100:
+                break
+
+            # Solves using method only possibilities field until it yields results
             b_n_exc = sudoku.number_to_excluded()
             sudoku.only_poss_field()
             a_n_exc = sudoku.number_to_excluded()
+
             if b_n_exc == a_n_exc:
+
+                # Solves using method only possibilities row, column, square until it yields results
                 sudoku.only_poss_row()
                 sudoku.only_poss_col()
                 sudoku.only_poss_square()
@@ -257,8 +296,10 @@ class Sudoku:
 
                 if b_n_exc == a_n_exc:
                     sudoku_copy = copy.deepcopy(sudoku)
+
                     while not sudoku_copy.solved:
 
+                        # Solves using method make a guess  until it yields results and other methods
                         b_n_exc = sudoku_copy.number_to_excluded()
                         sudoku_copy.only_poss_field()
                         a_n_exc = sudoku_copy.number_to_excluded()
@@ -274,54 +315,22 @@ class Sudoku:
                         if not sudoku_copy.correct:
                             sudoku_copy = copy.deepcopy(sudoku)
                             counter += 1
+                            if counter == 100:
+                                success = False
+                                break
 
                         if b_n_exc == a_n_exc:
-                            sudoku_copy.type_random()
+                            if not sudoku_copy.solved:
+                                sudoku_copy.type_random()
 
                         if sudoku_copy.solved:
                             sudoku = sudoku_copy
+
         sudoku.only_poss_field()
-        return sudoku.board
 
-    @staticmethod
-    def solve2(sudoku):
-        sudoku.create_board_pos()
-        counter = 0
-        while not sudoku.solved:
+        if sudoku.solved:
+            success = True
 
-            b_n_exc = sudoku.number_to_excluded()
-            sudoku.only_poss_field()
-            a_n_exc = sudoku.number_to_excluded()
-            if b_n_exc == a_n_exc:
-                sudoku.only_poss_row()
-                sudoku.only_poss_col()
-                sudoku.only_poss_square()
-                a_n_exc = sudoku.number_to_excluded()
+        return success, sudoku.board
 
-                if b_n_exc == a_n_exc:
-                    sudoku_copy = copy.deepcopy(sudoku)
-                    while not sudoku_copy.solved:
 
-                        b_n_exc = sudoku_copy.number_to_excluded()
-                        sudoku_copy.only_poss_field()
-                        a_n_exc = sudoku_copy.number_to_excluded()
-
-                        if b_n_exc == a_n_exc:
-                            sudoku_copy.only_poss_row()
-                            sudoku_copy.only_poss_col()
-                            sudoku_copy.only_poss_square()
-                            a_n_exc = sudoku_copy.number_to_excluded()
-
-                        sudoku_copy.check_correct()
-
-                        if not sudoku_copy.correct:
-                            sudoku_copy = copy.deepcopy(sudoku)
-                            counter += 1
-
-                        if b_n_exc == a_n_exc:
-                            sudoku_copy.type_random()
-
-                        if sudoku_copy.solved:
-                            sudoku = sudoku_copy
-        sudoku.only_poss_field()
-        return sudoku.board

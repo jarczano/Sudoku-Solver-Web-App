@@ -5,14 +5,15 @@ import numpy as np
 import math
 
 
-
 def find_squares(frame, board_contour):
     """
-        Function divides the board into 81 squares
-    :param board: image of sudoku board
-    :return: if board could  split into 81 squares: split = True and contours_square a list of contours.
-            if board could not split into 81 squares: split = False and contours_square None
+    Function recognises 81 squares in sudoku board
+    :param frame: frame from user camera
+    :param board_contour:  contours of sudoku board
+    :return: a zoomed-in and straightened image of the Sudoku board, list of 81 contours small square
     """
+
+    # checking at what angle the board is tilted
     angle = protractor(board_contour)
     x, y, w, h = cv2.boundingRect(board_contour)
     board = frame[y:y + h, x:x + w]
@@ -25,7 +26,6 @@ def find_squares(frame, board_contour):
 
     # image preprocessing
     img = cv2.cvtColor(board, cv2.COLOR_BGR2GRAY)
-    #img = board
     blur = cv2.GaussianBlur(img, (7, 7), 0)
     blur = cv2.medianBlur(blur, 5)
     ret, thresh = cv2.threshold(blur, 50, 255, cv2.THRESH_BINARY_INV)
@@ -42,10 +42,6 @@ def find_squares(frame, board_contour):
     contours = [cv2.approxPolyDP(contour, HEIGHT_SQ * 0.15, True) for contour in contours]
     contours_square = []
 
-    # print("draw")
-    #cv2.drawContours(board, contours, -1, (0, 255, 0), thickness=2)
-    #cv2.waitKey(-1)
-    # print(contours)
     # selecting such contours that have: 1) suitable area, 2) 4 vertices, 3) convex shape
     for i in range(len(contours)):
         area = round(cv2.contourArea(contours[i], 1))
@@ -53,14 +49,8 @@ def find_squares(frame, board_contour):
             if contours[i].shape[0] == 4:
                 if cv2.isContourConvex(contours[i]):
                     cv2.drawContours(board, contours, i, (255, 0, 0), thickness=4)
-
-
-                    #x, y, w, h = cv2.boundingRect(contours[i])
-                    #cv2.putText(board, '{} a:{}, p:{}'.format(i, area, contours[i].shape[0]), (x, y + 40), FONT, 0.3, (0,0,255), 1)
                     contours_square.append(contours[i])
     split = True
-    #cv2.imshow('frame', board)
-    #cv2.waitKey(-1)
     if len(contours_square) != 81:
         split = False
         contours_square = None
@@ -73,18 +63,21 @@ def find_squares(frame, board_contour):
 
 def split_board(image, contour):
     """
-    f from image return list of contour squares and zoom to board
-    :return:
+    The function determines a list of contours for all cells based on an equal division of the four edges of the board
+    :param image: frame from user camera
+    :param contour: contours of sudoku board
+    :return: a zoomed-in and straightened image of the Sudoku board, list of 81 contours small square
     """
-    # to zas chyba trezbe od komentowac
-    #image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    #path_read = r"test\catch_board3.jpg"
-    #image = cv2.imread(str(path_read))
-    #found, contour = big_contour(image)
+
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # checking at what angle the board is tilted
     angle = protractor(contour)
+
     contour = np.amin(contour, axis=1)
     contour = contour[contour[:, 1].argsort()]
+
+
 
     # rotate img
     rotate_image = ndimage.rotate(image, angle, cval=0)
@@ -119,7 +112,6 @@ def split_board(image, contour):
     contours_sq = divide_contour(zoom_contour)
     contours_sq = np.array(contours_sq).astype(np.int32)
     contours_sq = contours_sq.reshape((9, 9, 4, 1, 2))
-    #contours_sq = contours_sq.reshape((9, 9))
     splited = True
 
     return splited, zoom_image, contours_sq

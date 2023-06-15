@@ -3,35 +3,33 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Przesyłanie strumienia wideo</title>
+    <title>Video Stream</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="static/style.css">
 </head>
 <body>
 
     <h1 class="title">Sudoku Solver</h1>
 
-    <div id="Loader_container">
+    <div id="loader_container">
         <span id='loader' class="loader"></span>
         <p id="loader_text">Please wait</p>
     </div>
 
 
     <div id="video_container">
-        <video id="videoElement" autoplay></video>
+        <video id="video_element" autoplay></video>
         <img id="image_solution" >
     </div>
 
       <div class="buttons">
-        <button disabled id="camera-button"  class="camera-button" onclick="SwitchCamera()">Zmień kamerę</button>
-        <button disabled id='next-button' class="next-button" onclick="NextSearch()">Następne wyszukiwanie</button>
+        <button disabled id="camera_button"  class="camera_button" onclick="SwitchCamera()">Change camera</button>
+        <button disabled id='next_button' class="next_button" onclick="NextSearch()">Next</button>
       </div>
 
-        <div id="fail"></div>
-
-    <!--<canvas id="canvas" width="400" height="300" ></canvas>-->
-
+    <div id="fail"></div>
 
     <script src="static/script.js"></script>
 

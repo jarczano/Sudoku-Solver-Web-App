@@ -6,14 +6,13 @@
     background-color: black;
   }
 
-  /* Ustawienia dla całego ekranu */
   html, body {
     height: 100%;
-
   }
 
    body{
-        height: 100%;
+    font-family: 'Poppins', sans-serif;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,52 +31,44 @@
         position: relative;
     }
 
-    #videoElement, #image_solution{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+    #video_element, #image_solution{
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
     }
 
-
-  /* Nagłówek */
   .title {
     font-size: 34px;
     text-align: center;
     margin-bottom: 20px;
   }
 
-    /* Przyciski */
   .buttons {
-
     display: flex;
     justify-content: center;
     gap: 10px;
   }
 
-  .camera-button,
-  .next-button {
+  .camera_button,
+  .next_button {
     padding: 10px 20px;
     border: 2px solid white;
   }
 
 button:disabled {
-  opacity: 0.5; /* zmniejszenie przezroczystości */
-  cursor: not-allowed; /* zmiana kursora na niedozwolony */
-  /* inne style, które chcesz dodać dla przycisku nieaktywnego */
+  opacity: 0.5;
+  cursor: not-allowed;
 }
-
-
-
 
   .image_solution{
     display:none;
   }
 
 .canvas{
+    display: none;
+}
 
-display: none;}
-
-#Loader_container, #fail{
+#loader_container, #fail{
   position: absolute;
   z-index: 999;
   display: none;
@@ -85,32 +76,30 @@ display: none;}
   left: 50%;
   flex-direction: column;
   background: transparent;
-  /*justify-content: center;*/
   align-items: center;
   transform: translate(-50%, -50%);
-  /*height: 100vh;*/ /* opcjonalnie, aby elementy były wyśrodkowane w pionie */
+  text-align: center;
 }
 
-
 #fail{
-    font-size:48px;
+    font-size:36px;
     color: white;
+    text-shadow: 2px 2px 4px black;
     display: flex;
 }
 
 #loader_text{
     background-color: transparent;
     color: white;
-    font-size:48px;
+    text-shadow: 2px 2px 4px black;
+    font-size:36px;
 }
 
-
 .loader {
-background-color: transparent;
+  background-color: transparent;
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  /*position: relative;*/
   border: 10px solid;
   border-color: rgba(255, 255, 255, 0.15) rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.5);
   box-sizing: border-box;
