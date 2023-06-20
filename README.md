@@ -35,8 +35,9 @@ The CNN model training code is available in the local version of the project.
 - Add the SSL certificate `cert.crt` and the private key `private.key` to the main folder. You can generate them for free using OpenSSL.
 - Run `main.py`: `python main.py`
 
+The application can be accessed on devices connected to the local network using the address displayed after running `main.py`.  
+Model training is available in a local version aplication.
 
-The application can be accessed on devices connected to the local network using the address displayed after running `main.py`.
 
 ## Technologies:
 - Numpy
@@ -47,8 +48,7 @@ The application can be accessed on devices connected to the local network using 
 - Opencv
 
 ## Related Projects:
-- Sudoku Solver Locally App
-
+- Sudoku Solver Locally App https://github.com/jarczano/Sudoku-Solver-Local-App
 ## License:
 MIT
 
