@@ -38,7 +38,6 @@ The CNN model training code is available in the local version of the project.
 The application can be accessed on devices connected to the local network using the address displayed after running `main.py`.  
 Model training is available in a local version aplication.
 
-
 ## Technologies:
 - Numpy
 - Flask
@@ -50,7 +49,7 @@ Model training is available in a local version aplication.
 ## Related Projects:
 - Sudoku Solver Locally App https://github.com/jarczano/Sudoku-Solver-Local-App
 ## License:
-MIT
+- MIT
 
 ## Author:
-Jarosław Turczyn
+- Jarosław Turczyn
