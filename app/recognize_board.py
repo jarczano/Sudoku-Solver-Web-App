@@ -12,8 +12,8 @@ def recognize_board(board, sorted_split_board):
     :return: digital sudoku board as numpy array
     """
 
-    model_binary = load_model(r'model\model_binary1685438852.1508806.h5')
-    model = load_model(r'model\model1685450577.378637.h5')
+    model_binary = load_model(r'model/model_binary1685438852.1508806.h5')
+    model = load_model(r'model/model1685450577.378637.h5')
     digital_board = np.zeros((9, 9), dtype=np.uint8)
 
 

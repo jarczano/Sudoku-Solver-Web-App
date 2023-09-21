@@ -1,6 +1,6 @@
 import cv2
 from scipy import ndimage
-from utils import protractor, sorted_squares, divide_contour
+from app.utils import protractor, sorted_squares, divide_contour
 import numpy as np
 import math
 
@@ -76,8 +76,6 @@ def split_board(image, contour):
 
     contour = np.amin(contour, axis=1)
     contour = contour[contour[:, 1].argsort()]
-
-
 
     # rotate img
     rotate_image = ndimage.rotate(image, angle, cval=0)

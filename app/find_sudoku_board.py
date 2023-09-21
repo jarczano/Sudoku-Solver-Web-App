@@ -1,7 +1,7 @@
 import cv2
 import heapq
 import numpy as np
-from utils import euclidian_distance
+from app.utils import euclidian_distance
 
 
 def find_sudoku_board(frame):
