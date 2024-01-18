@@ -4,7 +4,7 @@
 Sudoku is a puzzle game that involves filling a 9x9 grid with numbers from 1 to 9, ensuring that each column, each row, and each of the nine 3x3 subgrids (referred to as "blocks" or "sub-squares") contains all the digits from 1 to 9.  
 This project works as a web application server. The website utilizes the camera on the client's device to perform real-time recognition of a Sudoku puzzle, subsequently solving the puzzle and displaying the results. The project is available in two versions: a local application and a web application.
 
-https://github.com/jarczano/Sudoku-Solver-Web-App/assets/107764304/3d9e7693-dbd1-4876-9dbe-76a3daf54a46
+https://github.com/jarczano/Sudoku-Solver-Web-App/assets/107764304/0292f297-c4bb-4115-9bc4-d01fe915797d
 
 ## Project Description - How It Works:
 
